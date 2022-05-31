@@ -22,7 +22,7 @@ namespace awatchdog
   /// </summary>
   public partial class MainWindow : Window
   {
-    ProcMngmt pm;
+    ProcMgnt pm;
     const uint kFontSize = 16;
     public Dictionary<string, TextBlock> stat_txt_list = new Dictionary<string, TextBlock>();
     private System.Timers.Timer timer;
@@ -30,6 +30,7 @@ namespace awatchdog
     public MainWindow()
     {
       InitializeComponent();
+      this.g1.MouseMove += this.onMouseMove;
     }
 
     private void onActivated(object sender, EventArgs e)
@@ -40,13 +41,14 @@ namespace awatchdog
     private void onInitialized(object sender, EventArgs e)
     {
       System.Diagnostics.Debug.WriteLine("initialized");
-      pm = new ProcMngmt();
+      pm = new ProcMgnt();
       bool res = pm.init(this);
       if (false == res)
       {
-        MessageBox.Show("process management object open failed.");
-        Close();
+        MessageBox.Show("Process management object open failed.");
       }
+
+      this.Title = "awatchdog";
       prepareCtrls();
       timer = new System.Timers.Timer(1000);
       timer.Elapsed += onTimer;
@@ -68,7 +70,6 @@ namespace awatchdog
     {
       //https://docs.microsoft.com/en-us/dotnet/desktop/wpf/controls/how-to-create-a-grid-element?view=netframeworkdesktop-4.8
 
-
       var row = new RowDefinition();
       row.MinHeight = 30;
       row.MaxHeight = 30;
@@ -80,9 +81,10 @@ namespace awatchdog
         TextBlock tb = new TextBlock();
         tb.Text = colname[idx];
         tb.FontSize = kFontSize;
+        tb.FontWeight = FontWeights.Bold;
         
         var border = new Border();
-        border.BorderThickness = new Thickness(0, 0, 1, 1);
+        border.BorderThickness = new Thickness(1, 1, 1, 2);
         border.BorderBrush = Brushes.Black;
         border.Child = tb;
         Grid.SetColumn(border, idx);
@@ -141,9 +143,33 @@ namespace awatchdog
       }
 
       // window size set
-      Application.Current.MainWindow.Height = rowno * max_height;
-    }
+      Application.Current.MainWindow.Height = rowno * max_height + max_height;
 
+      g1.LayoutUpdated += new EventHandler(onStatusUpdate);
+    }
+    private void onStatusUpdate(object sender, EventArgs e)
+    {
+      foreach (var tb in stat_txt_list)
+      {
+        if ("dead" == tb.Value.Text)
+        {
+          tb.Value.Foreground = Brushes.MediumVioletRed;
+        }
+        else if ("unknown" == tb.Value.Text)
+        {
+          tb.Value.Foreground = Brushes.PaleVioletRed;
+        }
+        else if ("opening" == tb.Value.Text)
+        {
+          tb.Value.Foreground = Brushes.DarkBlue;
+        }
+        else
+        {
+          tb.Value.Foreground = Brushes.Black;
+        }
+      }
+
+    }
     private void onCheckAliveChkboxUnchecked(object sender, RoutedEventArgs e)
     {
       CheckBox cb = sender as CheckBox;
@@ -171,6 +197,14 @@ namespace awatchdog
     private void onClosed(object sender, EventArgs e)
     {
       pm.release();
+    }
+
+    private void onMouseMove(object sender, MouseEventArgs e)
+    {
+      if (e.LeftButton == MouseButtonState.Pressed)
+      {
+        this.DragMove();
+      }
     }
   }
 }

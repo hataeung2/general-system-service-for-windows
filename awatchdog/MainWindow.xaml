@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:awatchdog"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Activated="onActivated" Initialized="onInitialized" Closed="onClosed">
-    <Grid x:Name="g1">
+        Title="awatchdog" Height="400" Width="400" Activated="onActivated" Initialized="onInitialized" Closed="onClosed" ShowInTaskbar="False" ResizeMode="NoResize" WindowStyle="None">
+    <Grid x:Name="g1" MouseMove="onMouseMove">
         
     </Grid>
 </Window>

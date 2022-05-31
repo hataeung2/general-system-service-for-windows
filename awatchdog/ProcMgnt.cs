@@ -18,10 +18,10 @@ namespace awatchdog
     public string status { get; set; }
     public int pid { get; set; }
   }
-  class ProcMngmt
+  class ProcMgnt
   {
+    //String default_path = @"C:\GeneralSystemService";
     MainWindow mw;
-    SQLiteConnection conn;
     public Dictionary<string, ProcInfo> process_list = new Dictionary<string, ProcInfo>();
     public System.Object sync_door = new System.Object();
     Thread t;
@@ -30,9 +30,8 @@ namespace awatchdog
     public void release()
     {
       thread_run_cond = false;
-      t.Join();
+      if (null != t && t.IsAlive) t.Join();
       closeProcs();
-      conn.Close();
     }
     public bool init(MainWindow mw)
     {
@@ -66,23 +65,26 @@ namespace awatchdog
       // 체크 되어 있으면 죽으면 자동 실행. 아니면 그냥 프로세스이름, 상태 표시
       try
       {
-        string strConn = @"Data Source=awatchdog.db";
-        conn = new SQLiteConnection(strConn);
-        conn.Open();
-        string sql = "SELECT * FROM process_list ORDER BY priority ASC";
-        SQLiteCommand cmd = new SQLiteCommand(sql, conn);
-        SQLiteDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        string strConn = String.Format(@"Data Source=awatchdog.db");
+        using (SQLiteConnection conn = new SQLiteConnection(strConn))
         {
-          var pi = new ProcInfo();
-          pi.priority = Convert.ToUInt32(rdr["priority"]);
-          pi.name = rdr["name"].ToString();
-          pi.filepath = rdr["filepath"].ToString();
-          pi.status = rdr["status"].ToString();
-          pi.checkalive = Convert.ToBoolean(rdr["checkalive"]);
-          process_list.Add(pi.name, pi);
+          conn.Open();
+          string sql = "SELECT * FROM process_list ORDER BY priority ASC";
+          SQLiteCommand cmd = new SQLiteCommand(sql, conn);
+          SQLiteDataReader rdr = cmd.ExecuteReader();
+          while (rdr.Read())
+          {
+            var pi = new ProcInfo();
+            pi.priority = Convert.ToUInt32(rdr["priority"]);
+            pi.filepath = rdr["filepath"].ToString();
+            pi.name = rdr["name"].ToString();
+            pi.status = rdr["status"].ToString();
+            pi.checkalive = Convert.ToBoolean(rdr["checkalive"]);
+            process_list.Add(pi.name, pi);
+          }
+          rdr.Close();
         }
-        rdr.Close();
+
         return true;
       }
       catch
@@ -139,13 +141,18 @@ namespace awatchdog
                 Process proc = Process.GetProcessById(p.Value.pid);
                 stat_list[p.Value.name] = "alive";
               } catch {
-                System.Diagnostics.Debug.WriteLine("process no exist with pid " + p.Value.pid.ToString());
-                stat_list[p.Value.name] = "dead";
+                if ("opening" == p.Value.status) {
+                  stat_list[p.Value.name] = "opening...";
+                } else {
+                  System.Diagnostics.Debug.WriteLine("process no exist with pid " + p.Value.pid.ToString());
+                  stat_list[p.Value.name] = "dead";
+                }
               }
             } else {
               stat_list[p.Value.name] = "unknown";
             }
           }
+
 
           foreach (var stat in stat_list) {
             ProcInfo pi = process_list[stat.Key];
@@ -153,11 +160,14 @@ namespace awatchdog
             if ("dead" == stat.Value) {
               int pid = createProcess(pi.filepath, pi.name);
               pi.pid = pid;
+              pi.status = "opening";
             }
             process_list[stat.Key] = pi;
           }
+
+          Thread.Sleep(500);
+
         }
-        Thread.Sleep(1000);
       }
     }
 
