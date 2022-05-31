@@ -21,6 +21,7 @@ namespace general_system_service
          new gss()
       };
       ServiceBase.Run(ServicesToRun);
+      Console.WriteLine("gss stop");
     }
   }
 }
