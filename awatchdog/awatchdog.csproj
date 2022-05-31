@@ -146,4 +146,15 @@
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.5\build\net451\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.5\build\net451\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy $(TargetDir)$(TargetFileName) $(SolutionDir)out\ /Y
+xcopy $(TargetDir)$(TargetName).db $(SolutionDir)out\ /Y
+xcopy $(TargetDir)*.dll $(SolutionDir)out\ /Y
+xcopy $(TargetDir)x64 $(SolutionDir)out\x64\ /E /Y
+xcopy $(TargetDir)x86 $(SolutionDir)out\x86\ /E /Y
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>xcopy $(SolutionDir)$(ProjectName)\dbs\*.* $(TargetDir) /Y</PreBuildEvent>
+  </PropertyGroup>
 </Project>
