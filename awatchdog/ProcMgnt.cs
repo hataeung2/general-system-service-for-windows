@@ -136,6 +136,10 @@ namespace awatchdog
         lock (sync_door)
         {
           foreach (var p in process_list) { 
+            if (0 == p.Value.pid)
+            {
+              continue;
+            }
             if (p.Value.checkalive) {
               try {
                 Process proc = Process.GetProcessById(p.Value.pid);

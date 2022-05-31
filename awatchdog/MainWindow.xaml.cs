@@ -157,7 +157,7 @@ namespace awatchdog
         }
         else if ("unknown" == tb.Value.Text)
         {
-          tb.Value.Foreground = Brushes.PaleVioletRed;
+          tb.Value.Foreground = Brushes.DarkGray;
         }
         else if ("opening" == tb.Value.Text)
         {
