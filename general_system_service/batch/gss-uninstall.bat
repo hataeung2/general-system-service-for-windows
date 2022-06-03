@@ -1,9 +1,8 @@
-:: BatchGotAdmin
-:-------------------------------------
-REM  --> Check for permissions
+@REM :-------------------------------------
+@REM --> Check for permissions
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
 
-REM --> If error flag set, we do not have admin.
+@REM --> If error flag set, we do not have admin.
 if '%errorlevel%' NEQ '0' (
     echo Requesting administrative privileges...
     goto UACPrompt
@@ -20,9 +19,7 @@ if '%errorlevel%' NEQ '0' (
     if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
     pushd "%CD%"
     CD /D "%~dp0"
-:--------------------------------------
+@REM :--------------------------------------
 
-@REM --> stop the service
-net stop gss
-@REM --> install the service
-installutil /u general_system_service.exe
+@REM --> uninstall the service
+installutil /u C:\GeneralSystemService\general_system_service.exe

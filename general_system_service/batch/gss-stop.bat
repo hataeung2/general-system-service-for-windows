@@ -21,6 +21,5 @@ if '%errorlevel%' NEQ '0' (
     CD /D "%~dp0"
 @REM :--------------------------------------
 
-
-@REM --> install the service
-installutil C:\GeneralSystemService\general_system_service.exe
+@REM --> stop the service
+net stop gss
