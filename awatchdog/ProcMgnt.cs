@@ -18,9 +18,9 @@ namespace awatchdog
     public string status { get; set; }
     public int pid { get; set; }
   }
-  class ProcMgnt
+  partial class ProcMgnt
   {
-    //String default_path = @"C:\GeneralSystemService";
+    String pahtStr = @"C:\GeneralSystemService";
     MainWindow mw;
     public Dictionary<string, ProcInfo> process_list = new Dictionary<string, ProcInfo>();
     public System.Object sync_door = new System.Object();
@@ -32,9 +32,12 @@ namespace awatchdog
       thread_run_cond = false;
       if (null != t && t.IsAlive) t.Join();
       closeProcs();
+      //destroyNotifyIcon(); // todo
     }
     public bool init(MainWindow mw)
     {
+      //createNotifyIcon(); // todo
+
       this.mw = mw;
       bool res = getProcessList();
       if (res)
@@ -65,7 +68,7 @@ namespace awatchdog
       // 체크 되어 있으면 죽으면 자동 실행. 아니면 그냥 프로세스이름, 상태 표시
       try
       {
-        string strConn = String.Format(@"Data Source=awatchdog.db");
+        string strConn = String.Format(@"Data Source={0}\awatchdog.db", pahtStr);
         using (SQLiteConnection conn = new SQLiteConnection(strConn))
         {
           conn.Open();

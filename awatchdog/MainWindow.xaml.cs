@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
+using System.Net;
+using System.Net.Http;
 
 
 namespace awatchdog
@@ -38,8 +40,58 @@ namespace awatchdog
       System.Diagnostics.Debug.WriteLine("activated");
     }
 
+
+    public async Task<bool> isInternetConnected()
+    {
+      try
+      {
+        using (var client = new HttpClient())
+        {
+          var uri = "http://google.com";
+          var response = await client.GetAsync(uri);
+          response.EnsureSuccessStatusCode();
+          if (HttpStatusCode.OK != response.StatusCode)
+          {
+            return false;
+          }
+          string responseBody = await response.Content.ReadAsStringAsync();
+          //string responseBody = await client.GetStringAsync(uri);
+
+          Console.WriteLine(responseBody);
+          return true;
+        }
+      }
+      catch (HttpRequestException e)
+      {
+        Console.WriteLine(e.Message);
+        return false;
+      }
+    }
     private void onInitialized(object sender, EventArgs e)
     {
+      // mutext for only process
+      bool flagMutex;
+      Mutex m_hMutex = new Mutex(true, "awatchdog.exe", out flagMutex);
+      if (flagMutex)
+      {
+        m_hMutex.ReleaseMutex();
+      }
+      else
+      {
+        MessageBox.Show("Another awatchdog.exe process is being used", "Error");
+        Close(); return;
+      }
+
+      // internet access check
+      var task = Task.Run(async () => await isInternetConnected());
+      var res_connected = task.GetAwaiter();
+      if (false == res_connected.GetResult())
+      {
+        MessageBox.Show("Internet should be connected", "Error");
+        Close(); return;
+      }
+
+      // start initialize
       System.Diagnostics.Debug.WriteLine("initialized");
       pm = new ProcMgnt();
       bool res = pm.init(this);
@@ -47,7 +99,6 @@ namespace awatchdog
       {
         MessageBox.Show("Process management object open failed.");
       }
-
       this.Title = "awatchdog";
       prepareCtrls();
       timer = new System.Timers.Timer(1000);
@@ -196,7 +247,10 @@ namespace awatchdog
 
     private void onClosed(object sender, EventArgs e)
     {
-      pm.release();
+      if (null != pm)
+      {
+        pm.release();
+      }
     }
 
     private void onMouseMove(object sender, MouseEventArgs e)
