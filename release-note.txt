@@ -1,0 +1,10 @@
+
+# 03-Jun-2022
+## v1.0.0
+- General System Service for watchdogging Windows processes
+
+
+## todo list
+  1.
+  NotifyIcon. Single running with 'awatchdog.exe' only is okay to see the NotifyIcon. 
+  But running by service, it doesn't run as I expected.
