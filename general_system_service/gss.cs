@@ -26,7 +26,7 @@ namespace general_system_service
     private Timer timer;
     protected ApplicationLoader.PROCESS_INFORMATION pi;
     protected Process p;
-    String pathString = @"C:\GeneralSystemService";
+    String pahtStr = @"C:\GeneralSystemService";
 
     protected void timer_Elapsed(object sender, ElapsedEventArgs e)
     {
@@ -41,7 +41,7 @@ namespace general_system_service
 
     protected void createProcess()
     {
-      String appName = pathString + @"\awatchdog.exe";
+      String appName = pahtStr + @"\awatchdog.exe";
       FileInfo fi = new FileInfo(appName);
       if (fi.Exists)
       {
@@ -68,9 +68,9 @@ namespace general_system_service
       }
       catch (Exception e)
       {
-        System.IO.Directory.CreateDirectory(pathString);
+        System.IO.Directory.CreateDirectory(pahtStr);
 
-        String file = pathString + @"\gss-log.txt";
+        String file = pahtStr + @"\gss-log.txt";
         FileStream fs = File.Open(file, FileMode.OpenOrCreate);
         
         byte[] log = new UTF8Encoding(true).GetBytes(
