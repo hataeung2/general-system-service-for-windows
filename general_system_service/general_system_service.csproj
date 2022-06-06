@@ -101,7 +101,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy $(SolutionDir)$(ProjectName)\batch\*.* $(SolutionDir)out\batch\ /Y
-xcopy $(TargetDir)$(TargetFileName) $(SolutionDir)\out\ /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(SolutionDir)$(ProjectName)\batch\*.*" "$(SolutionDir)out\batch\" /Y
+xcopy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)\out\" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
