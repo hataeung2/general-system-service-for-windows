@@ -11,9 +11,9 @@ namespace awatchdog
 {
   public struct ProcInfo
   {
-    public uint priority;
-    public string name;
-    public string filepath;
+    public uint priority { get; set; }
+    public string name { get; set; }
+    public string filepath { get; set; }
     public bool checkalive { get; set; }
     public string status { get; set; }
     public int pid { get; set; }

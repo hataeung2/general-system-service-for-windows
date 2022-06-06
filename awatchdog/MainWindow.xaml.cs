@@ -24,15 +24,18 @@ namespace awatchdog
   /// </summary>
   public partial class MainWindow : Window
   {
-    ProcMgnt pm;
+    static ProcMgnt pm;
     const uint kFontSize = 16;
     public Dictionary<string, TextBlock> stat_txt_list = new Dictionary<string, TextBlock>();
     private System.Timers.Timer timer;
+
+    MonitorListEdit list_editor;
 
     public MainWindow()
     {
       InitializeComponent();
       this.g1.MouseMove += this.onMouseMove;
+      this.g1.MouseRightButtonUp += this.onMouseRightButtonUp;
     }
 
     private void onActivated(object sender, EventArgs e)
@@ -94,6 +97,8 @@ namespace awatchdog
       // start initialize
       System.Diagnostics.Debug.WriteLine("initialized");
       pm = new ProcMgnt();
+      list_editor = new MonitorListEdit(ref pm.process_list);
+      
       bool res = pm.init(this);
       if (false == res)
       {
@@ -247,6 +252,8 @@ namespace awatchdog
 
     private void onClosed(object sender, EventArgs e)
     {
+      list_editor.Close();
+
       if (null != pm)
       {
         pm.release();
@@ -258,6 +265,14 @@ namespace awatchdog
       if (e.LeftButton == MouseButtonState.Pressed)
       {
         this.DragMove();
+      }
+    }
+    private void onMouseRightButtonUp(object sender, MouseEventArgs e)
+    {
+      if (e.RightButton == MouseButtonState.Released)
+      {
+        list_editor.set(ref pm.process_list);
+        list_editor.Show();
       }
     }
   }
