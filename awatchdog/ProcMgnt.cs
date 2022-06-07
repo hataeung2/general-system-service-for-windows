@@ -9,8 +9,18 @@ using System.Diagnostics;
 
 namespace awatchdog
 {
-  public struct ProcInfo
+  public class ProcInfo
   {
+    public ProcInfo() { }
+    public ProcInfo(ProcInfo pi)
+    {
+      priority = pi.priority;
+      name = pi.name;
+      filepath = pi.filepath;
+      checkalive = pi.checkalive;
+      status = pi.status;
+      pid = pi.pid;
+    }
     public uint priority { get; set; }
     public string name { get; set; }
     public string filepath { get; set; }
@@ -20,7 +30,7 @@ namespace awatchdog
   }
   partial class ProcMgnt
   {
-    String pahtStr = @"C:\GeneralSystemService";
+    String pathStr = @"C:\GeneralSystemService";
     MainWindow mw;
     public Dictionary<string, ProcInfo> process_list = new Dictionary<string, ProcInfo>();
     public System.Object sync_door = new System.Object();
@@ -32,12 +42,9 @@ namespace awatchdog
       thread_run_cond = false;
       if (null != t && t.IsAlive) t.Join();
       closeProcs();
-      //destroyNotifyIcon(); // todo
     }
     public bool init(MainWindow mw)
     {
-      //createNotifyIcon(); // todo
-
       this.mw = mw;
       bool res = getProcessList();
       if (res)
@@ -68,7 +75,7 @@ namespace awatchdog
       // 체크 되어 있으면 죽으면 자동 실행. 아니면 그냥 프로세스이름, 상태 표시
       try
       {
-        string strConn = String.Format(@"Data Source={0}\awatchdog.db", pahtStr);
+        string strConn = String.Format(@"Data Source={0}\awatchdog.db", pathStr);
         using (SQLiteConnection conn = new SQLiteConnection(strConn))
         {
           conn.Open();
