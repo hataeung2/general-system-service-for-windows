@@ -40,9 +40,11 @@ namespace general_system_service
       // 
       // serviceInstaller1
       // 
+      this.serviceInstaller1.DelayedAutoStart = true;
       this.serviceInstaller1.Description = "a General System Service";
       this.serviceInstaller1.DisplayName = "gss";
       this.serviceInstaller1.ServiceName = "general system service";
+      this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
       // 
       // ProjectInstaller
       // 
