@@ -5,9 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:awatchdog"
         mc:Ignorable="d"
-        Title="MonitorListEdit" Height="480" Width="640" Closing="onClosing" Icon="awatchdog.ico" WindowStartupLocation="CenterOwner">
-    <Grid>
-        <DataGrid Name="dg" HorizontalAlignment="Left" Height="432" Margin="10,10,0,0" VerticalAlignment="Top" Width="615" BeginningEdit="onBeginningEdit"/>
-
-    </Grid>
+        Title="MonitorListEdit" Height="480" Width="640" Closing="onClosing" Icon="awatchdog.ico" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+  <Grid>
+    <DataGrid Name="dg" HorizontalAlignment="Left" Height="376" Margin="10,10,0,0" VerticalAlignment="Top" Width="545" BeginningEdit="onBeginningEdit" SelectionChanged="onSelect" SelectionMode="Single"/>
+    <Button x:Name="bttnDelete" Content="DELETE" HorizontalAlignment="Left" Margin="560,10,0,0" VerticalAlignment="Top" Width="56" Click="onClickDelete" Height="40"/>
+    <Button x:Name="bttnUp" Content="UP" HorizontalAlignment="Left" Margin="560,137,0,0" VerticalAlignment="Top" Width="56" Click="onClickUp" Height="40"/>
+    <Button x:Name="bttnDn" Content="DOWN" HorizontalAlignment="Left" Margin="560,182,0,0" VerticalAlignment="Top" Width="56" Click="onClickDown" Height="40"/>
+    <Button x:Name="bttnNew" Content="NEW" HorizontalAlignment="Left" Margin="560,346,0,0" VerticalAlignment="Top" Width="56" Click="onClickNew" Height="40"/>
+    <TextBox x:Name="tb_Priority" HorizontalAlignment="Left" Height="23" Margin="10,412,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="45" IsEnabled="False"/>
+    <TextBox x:Name="tb_FilePath" HorizontalAlignment="Left" Height="23" Margin="60,412,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="340" MouseDoubleClick="onMouseDoubleClick_FilePath" TextChanged="onFilepathTxtChanged"/>
+    <TextBox x:Name="tb_Name" HorizontalAlignment="Left" Height="23" Margin="405,412,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="onNameTxtChanged"/>
+    <CheckBox x:Name="cb_CheckAlive" Content="" HorizontalAlignment="Left" Margin="509,414,0,0" VerticalAlignment="Top" Height="21" Click="onCheckAliveClick"/>
+    <Button x:Name="bttnApply" Content="APPLY" HorizontalAlignment="Left" Margin="560,391,0,0" VerticalAlignment="Top" Width="56" Click="onClickApply" Height="44" FontWeight="Bold"/>
+    <TextBlock HorizontalAlignment="Left" Margin="10,391,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Priority"/>
+    <TextBlock HorizontalAlignment="Left" Margin="60,391,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="File Path" Width="70"/>
+    <TextBlock HorizontalAlignment="Left" Margin="405,391,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Name"/>
+    <TextBlock HorizontalAlignment="Left" Margin="490,391,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Check Alive" Width="65"/>
+  </Grid>
 </Window>

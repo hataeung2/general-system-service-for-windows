@@ -3,8 +3,9 @@
 ## v1.0.0
 - General System Service for watchdogging Windows processes
 
-
-## todo list
-  1.
-  NotifyIcon. Single running with 'awatchdog.exe' only is okay to see the NotifyIcon. 
-  But running by service, it doesn't run as I expected.
+## v1.0.1
+- Monitoring Process list CRUD function added. CRUD can be done in the configuration window.
+- Add shortcuts 
+  Ctrl + H to move the window to out of the screen
+  Ctrl + O to bring the window to the screen
+  Ctrl + P or Ctrl + MouseLeftDoubleClick to open the configuration window

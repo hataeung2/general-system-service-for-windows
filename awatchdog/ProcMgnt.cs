@@ -30,7 +30,7 @@ namespace awatchdog
   }
   partial class ProcMgnt
   {
-    String pathStr = @"C:\GeneralSystemService";
+    static public String pathStr = @"C:\GeneralSystemService";
     MainWindow mw;
     public Dictionary<string, ProcInfo> process_list = new Dictionary<string, ProcInfo>();
     public System.Object sync_door = new System.Object();

@@ -7,13 +7,13 @@
 !define PKG_NAME "gss-pack"
 !define PKG_REVISION "1"
 ; MAJOR.MINOR.PATCH.BUILT
-!define VERSION "1"
-!define BRANCH "0"
-!define PATCH "0"
+!define MAJOR "1"
+!define MINOR "0" ; branch or something bigger than patch revision
+!define PATCH "1"
 !define /date TIMESTAMP "%Y%m%d%H%M"
 !define BUILT "${TIMESTAMP}"
 
-!define PRODUCT_VERSION "${VERSION}.${BRANCH}.${PATCH}.${BUILT}"
+!define PRODUCT_VERSION "${MAJOR}.${MINOR}.${PATCH}.${BUILT}"
 
 
 RequestExecutionLevel admin

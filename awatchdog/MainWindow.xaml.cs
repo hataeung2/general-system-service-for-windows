@@ -24,10 +24,20 @@ namespace awatchdog
   /// </summary>
   public partial class MainWindow : Window
   {
+    const uint kFontSize = 11;
+
     static ProcMgnt pm;
-    const uint kFontSize = 16;
     public Dictionary<string, TextBlock> stat_txt_list = new Dictionary<string, TextBlock>();
     private System.Timers.Timer timer;
+
+
+    public static RoutedCommand cmd_Hide = new RoutedCommand();
+    public static RoutedCommand cmd_Show = new RoutedCommand();
+    public static RoutedCommand cmd_Config = new RoutedCommand();
+
+    MouseGesture configGesture = new MouseGesture(MouseAction.LeftDoubleClick, ModifierKeys.Control);
+    //System.Windows.Forms.NotifyIcon ni = null;
+    //bool niExist = false;
 
     MonitorListEdit list_editor;
 
@@ -36,13 +46,13 @@ namespace awatchdog
       InitializeComponent();
       this.g1.MouseMove += this.onMouseMove;
       this.g1.MouseRightButtonUp += this.onMouseRightButtonUp;
+      cmd_Hide.InputGestures.Add(new KeyGesture(Key.H, ModifierKeys.Control));
+      cmd_Show.InputGestures.Add(new KeyGesture(Key.O, ModifierKeys.Control));
+      cmd_Config.InputGestures.Add(new KeyGesture(Key.P, ModifierKeys.Control));
+      CommandBindings.Add(new CommandBinding(cmd_Hide, onCmdHide));
+      CommandBindings.Add(new CommandBinding(cmd_Show, onCmdShow));
+      CommandBindings.Add(new CommandBinding(cmd_Config, onCmdConfig));
     }
-
-    private void onActivated(object sender, EventArgs e)
-    {
-      System.Diagnostics.Debug.WriteLine("activated");
-    }
-
 
     public async Task<bool> isInternetConnected()
     {
@@ -106,12 +116,13 @@ namespace awatchdog
       }
       this.Title = "awatchdog";
       prepareCtrls();
+
       timer = new System.Timers.Timer(1000);
-      timer.Elapsed += onTimer;
+      timer.Elapsed += onTimerStatUpdate;
       timer.AutoReset = true;
       timer.Start();
     }
-    private void onTimer(Object src, System.Timers.ElapsedEventArgs e)
+    private void onTimerStatUpdate(Object src, System.Timers.ElapsedEventArgs e)
     {
       this.g1.Dispatcher.Invoke(
       (ThreadStart)(() => {
@@ -252,6 +263,7 @@ namespace awatchdog
 
     private void onClosed(object sender, EventArgs e)
     {
+      //destroyNotifyIcon();
       list_editor.Close();
 
       if (null != pm)
@@ -269,11 +281,83 @@ namespace awatchdog
     }
     private void onMouseRightButtonUp(object sender, MouseEventArgs e)
     {
+      // context menu?
       if (e.RightButton == MouseButtonState.Released)
+      {
+
+      }
+    }
+    private void onMouseDown(object sender, MouseButtonEventArgs e)
+    {
+      if (configGesture.Matches(null, e))
       {
         list_editor.set(ref pm.process_list);
         list_editor.Show();
       }
+      //if (hideGesture.Matches(null, e))
+      //{
+      //  Hide();
+      //  if (false == niExist) createNotifyIcon();
+      //}
     }
+
+    private void destroyNotifyIcon()
+    {
+      //if (null != ni) ni.Dispose();
+      //niExist = false;
+    }
+    public void createNotifyIcon()
+    {
+      //ni = new System.Windows.Forms.NotifyIcon();
+      //// NotifyIcon
+      //ni.Icon = new System.Drawing.Icon("awatchdog.ico");
+      //ni.Visible = true;
+      //ni.Text = "awatchdog";
+      //ni.ContextMenu = setContextMenu(ni);
+      //niExist = true;
+    }
+
+    private System.Windows.Forms.ContextMenu setContextMenu(System.Windows.Forms.NotifyIcon ni)
+    {
+      System.Windows.Forms.ContextMenu cm = new System.Windows.Forms.ContextMenu();
+      System.Windows.Forms.MenuItem show = new System.Windows.Forms.MenuItem();
+      show.Text = "Show";
+      show.Click += delegate (object click, EventArgs ea)
+      {
+        Show();
+        WindowState = System.Windows.WindowState.Normal;
+        //destroyNotifyIcon();
+      };
+      cm.MenuItems.Add(show);
+      System.Windows.Forms.MenuItem hide = new System.Windows.Forms.MenuItem();
+      hide.Text = "Hide";
+      hide.Click += delegate (object click, EventArgs ea)
+      {
+        Hide();
+        WindowState = System.Windows.WindowState.Minimized;
+      };
+      cm.MenuItems.Add(hide);
+      return cm;
+    }
+
+    private void onCmdHide(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.Left = -this.Width;
+      this.Top = -this.Height;
+      this.Opacity = 10;
+    }
+    private void onCmdShow(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.Left = 0;
+      this.Top = 0;
+      this.Opacity = 100;
+    }
+    private void onCmdConfig(object sender, ExecutedRoutedEventArgs e)
+    {
+      list_editor.set(ref pm.process_list);
+      list_editor.Show();
+    }
+
+
   }
 }
