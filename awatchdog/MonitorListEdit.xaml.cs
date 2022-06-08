@@ -113,22 +113,16 @@ namespace awatchdog
 
     private void onClickNew(object sender, RoutedEventArgs e)
     {
-      var name_to_use = tb_Name.Text;
-      foreach (var n in process_list_local)
-      {
-        if (n.Value.name == name_to_use)
-        {
-          MessageBox.Show("'name' identifier duplicate. use different name for each items.");
-          return;
-        }
-      }
+      var name_to_use = "unique.";
+      var filepath_to_use = "unique. doubleclick to open file dialog...";
+
       selectedItem = null;
       selectedIdx = kUnselected;
 
       var pi = new ProcInfo();
       pi.priority = (uint)process_list_local.Count + 1;
       pi.name = name_to_use;
-      pi.filepath = tb_FilePath.Text;
+      pi.filepath = filepath_to_use;
       pi.checkalive = (bool)cb_CheckAlive.IsChecked;
       
       process_list_local.Add(pi.priority, pi);
